@@ -1,10 +1,12 @@
-import {Injectable, Signal, signal} from '@angular/core';
+import {Inject, Injectable, Signal, signal} from '@angular/core';
 import {Observable} from 'rxjs';
 
 import {HttpClient} from '@angular/common/http';
 import {CurrentConditions} from './current-conditions/current-conditions.type';
 import {ConditionsAndZip} from './conditions-and-zip.type';
 import {Forecast} from './forecasts-list/forecast.type';
+import { CacheService } from './cache.service';
+import { CACHE_DURATION } from './app.module';
 
 @Injectable()
 export class WeatherService {
@@ -12,14 +14,21 @@ export class WeatherService {
   static URL = 'https://api.openweathermap.org/data/2.5';
   static APPID = '5a4b2d457ecbef9eb2a71e480b947604';
   static ICON_URL = 'https://raw.githubusercontent.com/udacity/Sunshine-Version-2/sunshine_master/app/src/main/res/drawable-hdpi/';
+  static CACHE_PREFIX = 'CONDITIONS-';
   private currentConditions = signal<ConditionsAndZip[]>([]);
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cacheService: CacheService, @Inject(CACHE_DURATION) private cacheDuration: number) { }
 
   addCurrentConditions(zipcode: string): void {
-    // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
-    this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
-      .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}]));
+    const cachedData = this.cacheService.getItem<CurrentConditions>(WeatherService.CACHE_PREFIX+zipcode);
+    if(!cachedData){
+      // Here we make a request to get the current conditions data from the API. Note the use of backticks and an expression to insert the zipcode
+      this.http.get<CurrentConditions>(`${WeatherService.URL}/weather?zip=${zipcode},us&units=imperial&APPID=${WeatherService.APPID}`)
+        .subscribe(data => {
+          this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}])
+          this.cacheService.setItemWithExpiry('CONDITIONS-'+zipcode, data, this.cacheDuration);
+        });
+    } 
   }
 
   removeCurrentConditions(zipcode: string) {

@@ -30,7 +30,7 @@ export class CacheService {
     if(itemStr){
       const item = JSON.parse(itemStr);
       if(!item.expiry || item.expiry >= new Date().getTime()){
-        return item.data;
+        return JSON.parse(item.data);
       } else {
         this.removeItem(key)
       }
