@@ -1,0 +1,22 @@
+<ul class="nav nav-tabs">
+    <li
+        *ngFor="let tab of tabs"
+        role="presentation"
+        [ngClass]="{ active: tab.isActive }"
+    >
+        <a class="btn btn-link" (click)="selectTab(tab)"
+            ><span
+                style="margin-right: 1rem"
+                [innerHTML]="tab.tab.title"
+            ></span>
+            <button
+                class="btn"
+                title="Remove"
+                (click)="removeTab(tab)"
+            >
+                <span>&times;</span>
+            </button>
+        </a>
+    </li>
+</ul>
+<ng-content></ng-content>
