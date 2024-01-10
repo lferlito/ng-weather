@@ -7,6 +7,7 @@ import {ConditionsAndZip} from './conditions-and-zip.type';
 import {Forecast} from './forecasts-list/forecast.type';
 import { CacheService } from './cache.service';
 import { CACHE_DURATION } from './app.module';
+import { LocationService } from './location.service';
 
 @Injectable()
 export class WeatherService {
@@ -17,7 +18,13 @@ export class WeatherService {
   static CACHE_PREFIX = 'CONDITIONS-';
   private currentConditions = signal<ConditionsAndZip[]>([]);
 
-  constructor(private http: HttpClient, private cacheService: CacheService, @Inject(CACHE_DURATION) private cacheDuration: number) { }
+  constructor(private http: HttpClient, private cacheService: CacheService, @Inject(CACHE_DURATION) private cacheDuration: number, private locationService: LocationService) {
+    this.locationService.locations$.subscribe((locations) => {
+      this.updateCurrentConditions(locations);
+    })
+   }
+
+   
 
   addCurrentConditions(zipcode: string): void {
     const cachedData = this.cacheService.getItem<CurrentConditions>(WeatherService.CACHE_PREFIX+zipcode);
@@ -29,6 +36,25 @@ export class WeatherService {
           this.cacheService.setItemWithExpiry('CONDITIONS-'+zipcode, data, this.cacheDuration);
         });
     } 
+  }
+
+  private updateCurrentConditions(locations: string[]){
+    // remove deleted conditions
+    this.currentConditions().forEach((condition) => {
+      if (!locations.includes(condition.zip)) {
+        this.removeCurrentConditions(condition.zip);
+      }
+    });
+    // add new conditions
+    locations.forEach((loc: string) => {
+      if (
+        this.currentConditions().find(
+          (cond: ConditionsAndZip) => cond.zip === loc
+        )
+      )
+        return;
+      this.addCurrentConditions(loc);
+    });
   }
 
   removeCurrentConditions(zipcode: string) {
