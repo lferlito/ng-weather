@@ -23,9 +23,7 @@ export class WeatherService {
       this.updateCurrentConditions(locations);
     })
    }
-
    
-
   addCurrentConditions(zipcode: string): void {
     const cachedData = this.cacheService.getItem<CurrentConditions>(WeatherService.CACHE_PREFIX+zipcode);
     if(!cachedData){
@@ -35,7 +33,9 @@ export class WeatherService {
           this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data}])
           this.cacheService.setItemWithExpiry('CONDITIONS-'+zipcode, data, this.cacheDuration);
         });
-    } 
+    } else {
+      this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data: cachedData}]);
+    }
   }
 
   private updateCurrentConditions(locations: string[]){

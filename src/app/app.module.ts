@@ -35,7 +35,7 @@ export const CACHE_DURATION = new InjectionToken<number>('cacheDuration');
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     SharedModule
   ],
-  providers: [LocationService, WeatherService, [{provide: CACHE_DURATION, useValue: 10}]],
+  providers: [LocationService, WeatherService, [{provide: CACHE_DURATION, useValue: 60}]],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

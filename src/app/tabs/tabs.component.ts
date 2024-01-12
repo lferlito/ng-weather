@@ -6,21 +6,17 @@ import { TabComponent } from 'app/tab/tab.component';
   templateUrl: './tabs.component.html',
   styleUrl: './tabs.component.css'
 })
-export class TabsComponent implements AfterContentInit {
+export class TabsComponent  implements AfterContentInit {
 
 
-  @ContentChildren(TabComponent) tabComponents: QueryList<TabComponent> | undefined;
+  @ContentChildren(TabComponent) tabs;
 
   @Output() tabRemoved: EventEmitter<string> = new EventEmitter<string>();
 
-  tabs: TabComponent[] = [];
-
-
   ngAfterContentInit(): void {
     setTimeout(() => { // per evitare l'errore NG0100
-      if (this.tabComponents) {
-        this.tabs = this.tabComponents.toArray();
-        this.selectTab(this.tabs[0]); // Select the first tab by default
+      if(this.tabs){
+        this.selectTab(this.tabs.first); // Select the first tab by default
       }
     })
   }
@@ -33,8 +29,9 @@ export class TabsComponent implements AfterContentInit {
   }
 
   removeTab(tab: TabComponent){
-    this.tabRemoved.emit(tab.tab.tabId);
+    this.tabs = this.tabs.filter((t) => t.tab.tabId !== tab.tab.tabId);
     this.selectTab(this.tabs[0]);
+    this.tabRemoved.emit(tab.tab.tabId);
   }
 
 }
