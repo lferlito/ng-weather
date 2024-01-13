@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { CacheService } from './cache.service';
 
 export const LOCATIONS : string = "locations";
 
@@ -11,25 +12,27 @@ export class LocationService {
   private locationSubject: BehaviorSubject<string[]> = new BehaviorSubject<string[]>([]);
   locations$ = this.locationSubject.asObservable();
 
-  constructor() {
-    let locString = localStorage.getItem(LOCATIONS);
-    if (locString){
-      this.locations = JSON.parse(locString);
+  constructor(private cacheService : CacheService) {
+    let locations = this.cacheService.getItem(LOCATIONS);
+    if (locations){
+      this.locations = locations;
       this.locationSubject.next(this.locations);
     }
   }
 
   addLocation(zipcode : string) {
-    this.locations.push(zipcode);
-    localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
-    this.locationSubject.next(this.locations);
+    if(!this.locations.includes(zipcode)){
+      this.locations.push(zipcode);
+      this.cacheService.setItem(LOCATIONS,this.locations);
+      this.locationSubject.next(this.locations);
+    }
   }
 
   removeLocation(zipcode : string) {
     let index = this.locations.indexOf(zipcode);
     if (index !== -1){
       this.locations.splice(index, 1);
-      localStorage.setItem(LOCATIONS, JSON.stringify(this.locations));
+      this.cacheService.setItem(LOCATIONS,this.locations);
       this.locationSubject.next(this.locations);
     }
   }

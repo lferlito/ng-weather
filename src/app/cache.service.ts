@@ -25,12 +25,12 @@ export class CacheService {
     this.storage.setItem(key,JSON.stringify(item));
   }
 
-  getItem<T>(key: string): T | null {
+  getItem(key: string): any | null {
     const itemStr = this.storage.getItem(key);
     if(itemStr){
       const item = JSON.parse(itemStr);
       if(!item.expiry || item.expiry >= new Date().getTime()){
-        return JSON.parse(item.data);
+        return item.data ? JSON.parse(item.data) : item;
       } else {
         this.removeItem(key)
       }
