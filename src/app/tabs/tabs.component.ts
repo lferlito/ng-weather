@@ -12,11 +12,23 @@ export class TabsComponent  implements AfterContentInit {
 
   @Output() tabRemoved: EventEmitter<string> = new EventEmitter<string>();
 
+  private lastTabsCount: number = 0;
+
   ngAfterContentInit(): void {
     setTimeout(() => { // wait for content projection ends
       if(this.tabs){
         this.selectTab(this.tabs.first); // Select the first tab by default
+        this.lastTabsCount = this.tabs.length;
       }
+    })
+
+    this.tabs.changes.subscribe(() => {
+      setTimeout(() => {
+        if(this.tabs.length > this.lastTabsCount){ //addition detected
+          this.lastTabsCount++;
+          this.selectTab(this.tabs.last);
+        }
+      });
     })
   }
 
@@ -30,7 +42,10 @@ export class TabsComponent  implements AfterContentInit {
   removeTab(tab: TabComponent){
     this.tabs = this.tabs.filter((t) => t.tab.tabId !== tab.tab.tabId);
     this.selectTab(this.tabs[0]);
+    this.lastTabsCount--;
     this.tabRemoved.emit(tab.tab.tabId);
   }
 
 }
+
+
