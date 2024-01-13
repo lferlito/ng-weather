@@ -5,3 +5,21 @@
   display: flex;
   justify-content: space-between;
 }
+.tab-content {
+  border: 1px solid #333;
+  padding: 30px;
+}
+
+.tabs {
+  li {
+    border: 1px solid #333;
+  }
+
+  li.active > a {
+    background-color: #617aa0;
+    color: white;
+    cursor: pointer;
+    border-radius:  0;
+    margin-right: 0;
+  }
+}
