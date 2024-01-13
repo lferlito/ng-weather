@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { InjectionToken, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { AppComponent } from './app.component';
 import { ZipcodeEntryComponent } from './zipcode-entry/zipcode-entry.component';
 import {LocationService} from "./location.service";
@@ -35,7 +34,12 @@ export const CACHE_DURATION = new InjectionToken<number>('cacheDuration');
     ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
     SharedModule
   ],
-  providers: [LocationService, WeatherService, [{provide: CACHE_DURATION, useValue: 60}]],
+  providers: [LocationService, 
+    WeatherService, 
+    [{
+      provide: CACHE_DURATION, 
+      useValue: 60 // default 60 seconds
+    }]],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

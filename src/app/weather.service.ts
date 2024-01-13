@@ -9,7 +9,9 @@ import { CacheService } from './cache.service';
 import { CACHE_DURATION } from './app.module';
 import { LocationService } from './location.service';
 
-@Injectable()
+@Injectable({
+  providedIn: "root"
+})
 export class WeatherService {
 
   static URL = 'https://api.openweathermap.org/data/2.5';

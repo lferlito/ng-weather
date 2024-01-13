@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ContentChildren, EventEmitter, Output, QueryList } from '@angular/core';
+import { AfterContentInit, Component, ContentChildren, EventEmitter, Output } from '@angular/core';
 import { TabComponent } from 'app/tab/tab.component';
 
 @Component({
@@ -8,13 +8,12 @@ import { TabComponent } from 'app/tab/tab.component';
 })
 export class TabsComponent  implements AfterContentInit {
 
-
   @ContentChildren(TabComponent) tabs;
 
   @Output() tabRemoved: EventEmitter<string> = new EventEmitter<string>();
 
   ngAfterContentInit(): void {
-    setTimeout(() => { // per evitare l'errore NG0100
+    setTimeout(() => { // wait for content projection ends
       if(this.tabs){
         this.selectTab(this.tabs.first); // Select the first tab by default
       }
