@@ -3,8 +3,7 @@ import { Tab } from 'app/shared/models/tab';
 
 @Component({
   selector: 'app-tab',
-  templateUrl: './tab.component.html',
-  styleUrl: './tab.component.css'
+  templateUrl: './tab.component.html'
 })
 export class TabComponent {
 

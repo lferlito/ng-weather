@@ -15,7 +15,7 @@ export class LocationService {
   locations$ = this.locationSubject.asObservable();
 
   constructor(private cacheService : CacheService) {
-    let locations = this.cacheService.getItem(LOCATIONS);
+    let locations = this.cacheService.getItem<string[]>(LOCATIONS);
     if (locations){
       this.locations = locations;
       this.locationSubject.next(this.locations);

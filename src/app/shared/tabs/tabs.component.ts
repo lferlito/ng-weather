@@ -1,10 +1,9 @@
 import { AfterContentInit, Component, ContentChildren, EventEmitter, Output } from '@angular/core';
-import { TabComponent } from 'app/tab/tab.component';
+import { TabComponent } from 'app/shared/tab/tab.component';
 
 @Component({
   selector: 'app-tabs',
-  templateUrl: './tabs.component.html',
-  styleUrl: './tabs.component.css'
+  templateUrl: './tabs.component.html'
 })
 export class TabsComponent  implements AfterContentInit {
 

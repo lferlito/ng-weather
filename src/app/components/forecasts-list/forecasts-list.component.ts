@@ -1,8 +1,8 @@
 import { Component, Inject, inject } from '@angular/core';
-import {WeatherService} from '../weather.service';
+import {WeatherService} from '../../services/weather.service';
 import {ActivatedRoute} from '@angular/router';
 import {Forecast} from './forecast.type';
-import { CacheService } from 'app/cache.service';
+import { CacheService } from 'app/services/cache.service';
 import { CACHE_DURATION } from 'app/app.module';
 
 @Component({
@@ -20,7 +20,7 @@ export class ForecastsListComponent {
   constructor(protected weatherService: WeatherService, route : ActivatedRoute, @Inject(CACHE_DURATION) private cacheDuration: number) {
     route.params.subscribe(params => {
       this.zipcode = params['zipcode'];
-      const cachedData = this.cacheService.getItem(ForecastsListComponent.CACHE_PREFIX+this.zipcode)
+      const cachedData = this.cacheService.getItem<Forecast>(ForecastsListComponent.CACHE_PREFIX+this.zipcode)
       if(!cachedData){
         weatherService.getForecast(this.zipcode)
         .subscribe(data => {

@@ -25,7 +25,7 @@ export class CacheService {
     this.storage.setItem(key,JSON.stringify(item));
   }
 
-  getItem(key: string): any | null {
+  getItem<T>(key: string): T | null {
     const itemStr = this.storage.getItem(key);
     if(itemStr){
       const item = JSON.parse(itemStr);
