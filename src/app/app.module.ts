@@ -38,7 +38,7 @@ export const CACHE_DURATION = new InjectionToken<number>('cacheDuration');
     WeatherService, 
     [{
       provide: CACHE_DURATION, 
-      useValue: 60 // default 60 seconds
+      useValue: 7200 // default 7200 seconds = 2 hours
     }]],
   bootstrap: [AppComponent]
 })
